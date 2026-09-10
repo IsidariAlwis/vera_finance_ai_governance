@@ -135,3 +135,345 @@ Across these use cases, VERA produces one of three primary outcomes:
 - **APPROVE** — the proposed action satisfies the defined verification and risk conditions.
 - **HUMAN REVIEW** — the action requires additional human judgement, approval, or investigation.
 - **BLOCK** — the action fails a critical control condition or exceeds an unacceptable risk or authority boundary.
+
+## 5. How VERA Works
+
+VERA operates as an independent decision-control layer between an AI system that proposes a financial action and the downstream system that could execute that action.
+
+The core workflow is:
+
+AI Agent
+→ Proposed Financial Action
+→ Evidence Verification
+→ Policy Verification
+→ Authority Verification
+→ Risk Assessment
+→ Decision Engine
+→ APPROVE / HUMAN REVIEW / BLOCK
+→ Audit Record
+
+### 5.1 AI Agent
+
+The AI agent represents an upstream intelligent system capable of analysing information and generating a proposed financial action.
+
+The agent does not directly determine whether its proposed action is authorised for execution.
+
+### 5.2 Proposed Financial Action
+
+The AI agent produces a structured action proposal containing the intended action, relevant entities, transaction details, reasoning or justification, and supporting information.
+
+The proposal becomes the input to VERA's independent verification process.
+
+### 5.3 Evidence Verification
+
+VERA evaluates the evidence supporting the proposed action.
+
+The evidence layer examines factors such as relevance, completeness, consistency, recency, and whether the evidence adequately supports the proposed action.
+
+Insufficient, contradictory, or unreliable evidence can prevent automatic approval.
+
+### 5.4 Policy Verification
+
+VERA evaluates the proposed action against the applicable policies and predefined business rules.
+
+This layer determines whether the action satisfies requirements such as transaction limits, eligibility conditions, approval requirements, and other operational constraints.
+
+### 5.5 Authority Verification
+
+VERA independently determines whether the AI agent is authorised to propose or execute the specific type of action within the defined boundaries.
+
+Authority may depend on factors such as action type, transaction value, account or workflow context, role, permission level, and approval thresholds.
+
+This layer deliberately separates the AI system's capability from its authority to execute.
+
+### 5.6 Risk Assessment
+
+VERA evaluates risk indicators associated with the proposed action.
+
+The risk assessment may consider factors such as transaction value, unusual behaviour, evidence quality, policy exceptions, authority violations, fraud indicators, and other defined risk signals.
+
+The resulting risk assessment contributes to the final decision.
+
+### 5.7 Decision Engine
+
+The Decision Engine combines the outputs of the verification layers and applies predefined decision logic.
+
+The resulting decision is one of three primary outcomes:
+
+- **APPROVE**
+- **HUMAN REVIEW**
+- **BLOCK**
+
+The decision should be deterministic and explainable based on the defined control conditions rather than relying solely on an AI-generated conclusion.
+
+### 5.8 Audit Record
+
+After each evaluation, VERA generates a structured audit record.
+
+The record captures the proposed action, relevant evidence, verification results, authority assessment, risk assessment, decision outcome, and supporting metadata.
+
+This creates a traceable representation of how the decision was reached and allows authorised stakeholders to review the decision later.
+
+### 5.9 Execution Boundary
+
+VERA is positioned before consequential execution.
+
+An APPROVE decision indicates that the proposed action has satisfied the defined prototype control conditions. A HUMAN REVIEW decision requires an authorised human decision-maker to determine whether the action should proceed. A BLOCK decision prevents the action from progressing through the prototype execution workflow.
+
+The prototype therefore treats VERA as a control boundary rather than as the financial execution system itself.
+
+## 6. VERA Decision Framework
+
+VERA evaluates every proposed financial action through four primary control dimensions:
+
+1. Evidence
+2. Policy
+3. Authority
+4. Risk
+
+These dimensions are evaluated independently before being combined by the Decision Engine.
+
+### 6.1 Evidence Control
+
+The Evidence Control determines whether the proposed action is sufficiently supported by relevant information.
+
+Key questions include:
+
+- Is supporting evidence available?
+- Is the evidence relevant to the proposed action?
+- Is the evidence sufficiently complete?
+- Are there contradictions between evidence sources?
+- Is the evidence sufficiently recent for the decision context?
+- Does the evidence actually support the proposed action?
+
+### 6.2 Policy Control
+
+The Policy Control determines whether the action complies with applicable rules and constraints.
+
+Key questions include:
+
+- Is the action permitted?
+- Are transaction or operational limits satisfied?
+- Are eligibility requirements satisfied?
+- Are additional approvals required?
+- Does the action conflict with any defined policy?
+
+### 6.3 Authority Control
+
+The Authority Control determines whether the AI agent and the workflow have sufficient authority for the proposed action.
+
+Key questions include:
+
+- Is the agent authorised for this action type?
+- Is the transaction value within the agent's permitted limit?
+- Does the action require elevated approval?
+- Does the proposed action exceed the assigned authority?
+- Is the required human authority available?
+
+### 6.4 Risk Control
+
+The Risk Control evaluates whether the proposed action falls within acceptable risk conditions.
+
+Key questions include:
+
+- What risk indicators are present?
+- Does the action exceed a defined risk threshold?
+- Are there unusual or potentially suspicious characteristics?
+- Are multiple control failures occurring simultaneously?
+- Does the action require additional human scrutiny?
+
+### 6.5 Decision Logic
+
+The four control dimensions contribute to the final decision.
+
+A simplified conceptual model is:
+
+Evidence
++
+Policy
++
+Authority
++
+Risk
+↓
+Decision Engine
+↓
+APPROVE / HUMAN REVIEW / BLOCK
+
+The Decision Engine should apply explicit and testable rules so that equivalent inputs produce consistent outcomes.
+
+The prototype may use weighted or threshold-based scoring for selected risk dimensions where appropriate, but critical control failures should be capable of overriding a favourable aggregate score.
+
+### 6.6 Decision Explainability
+
+Each decision should have an explicit explanation based on the control results.
+
+For example:
+
+**APPROVE**
+
+All required evidence was present, applicable policies were satisfied, the action remained within authorised boundaries, and the assessed risk remained below the configured threshold.
+
+**HUMAN REVIEW**
+
+The action did not contain a critical violation but one or more conditions required additional human judgement, approval, or investigation.
+
+**BLOCK**
+
+A critical control condition failed, such as insufficient evidence, a policy violation, an authority violation, or unacceptable risk.
+
+The explanation is intended to make the decision understandable to authorised operational, risk, product, and audit stakeholders.
+
+## 7. What VERA Does NOT Do
+
+VERA is a research-driven prototype and does not claim to replace production financial infrastructure, regulatory controls, security systems, or institutional governance processes.
+
+VERA does not:
+
+- act as a real bank or financial institution;
+- independently move real customer funds;
+- provide financial advice to customers;
+- replace human accountability for consequential decisions;
+- claim regulatory approval or certification;
+- guarantee that an AI-generated action is safe;
+- provide production-grade fraud detection;
+- provide a complete enterprise compliance platform;
+- assume that an AI-generated explanation is inherently trustworthy;
+- treat a high confidence score from an AI model as sufficient authority to execute an action.
+
+The prototype uses controlled and, where appropriate, synthetic data and simulated financial workflows for evaluation.
+
+Its purpose is to demonstrate and evaluate the proposed control architecture rather than to represent a production-ready financial system.
+
+Any future production implementation would require significantly greater engineering, security, regulatory, operational, model-risk, data-governance, and institutional controls.
+
+## 8. MVP Scope
+
+The VERA MVP will focus on demonstrating the complete decision-control lifecycle for a controlled set of consequential financial actions.
+
+### In Scope
+
+The MVP will include:
+
+- structured AI-generated financial action proposals;
+- an evidence verification layer;
+- a policy verification layer;
+- an authority verification layer;
+- a risk assessment layer;
+- a deterministic decision engine;
+- APPROVE, HUMAN REVIEW, and BLOCK outcomes;
+- human-in-the-loop escalation;
+- structured audit records;
+- synthetic evaluation scenarios;
+- test cases covering successful and failed control conditions;
+- an interface for submitting and reviewing proposed actions;
+- API-based communication between major system components;
+- persistent storage for relevant decisions and audit records.
+
+### Initial Action Types
+
+The prototype will initially focus on a limited set of financial action categories selected for their ability to demonstrate different control requirements.
+
+The initial implementation will prioritise refund and payment or transfer scenarios, while maintaining an architecture that can support additional consequential financial actions.
+
+### Out of Scope for the MVP
+
+The MVP will not include:
+
+- live banking integrations;
+- real customer financial data;
+- actual movement of funds;
+- production authentication infrastructure;
+- production regulatory certification;
+- unrestricted autonomous execution;
+- institution-specific compliance certification;
+- fully autonomous financial decision-making.
+
+These capabilities may be considered as future extensions rather than requirements for the initial prototype.
+
+## 9. Success Criteria
+
+VERA will be considered successful as a prototype if it demonstrates that a proposed financial action can be evaluated consistently through multiple independent control dimensions before reaching an execution decision.
+
+The MVP should demonstrate the following:
+
+### 9.1 Functional Success
+
+The system can accept a structured AI-generated action proposal and process it through evidence, policy, authority, and risk controls.
+
+### 9.2 Decision Success
+
+The system can correctly produce the intended APPROVE, HUMAN REVIEW, or BLOCK outcome for defined evaluation scenarios.
+
+### 9.3 Control Success
+
+Critical control failures, including policy violations, authority violations, and unacceptable risk conditions, can prevent inappropriate automatic approval.
+
+### 9.4 Explainability Success
+
+Every decision contains sufficient structured information to explain which controls were evaluated and why the resulting outcome was produced.
+
+### 9.5 Auditability Success
+
+A decision can be retrieved after evaluation together with its relevant evidence, control results, decision outcome, and associated metadata.
+
+### 9.6 Consistency Success
+
+Equivalent inputs processed under the same configured control conditions should produce consistent decisions.
+
+### 9.7 Human Oversight Success
+
+Cases requiring additional judgement can be routed to a human review workflow rather than being forced into automatic approval or rejection.
+
+### 9.8 Evaluation Success
+
+The prototype will be evaluated using a deliberately constructed set of positive, negative, borderline, contradictory, and adversarial scenarios.
+
+Evaluation results will be documented rather than relying solely on qualitative claims about system performance.
+
+## 10. Product Boundary and Design Principles
+
+VERA is built around the principle that increasing AI capability should not automatically result in increasing execution authority.
+
+The prototype follows the following design principles:
+
+### 10.1 Intelligence and Authority Separation
+
+An AI system may recommend an action without automatically possessing the authority to execute that action.
+
+### 10.2 Independent Verification
+
+The control layer should independently evaluate the conditions surrounding a proposed action rather than simply accepting the AI agent's conclusion.
+
+### 10.3 Evidence Before Execution
+
+Consequential actions should be supported by sufficient and relevant evidence before they can qualify for automatic approval.
+
+### 10.4 Explicit Policy Controls
+
+Policies and operational constraints should be represented as explicit, testable controls wherever practical.
+
+### 10.5 Bounded Authority
+
+AI actions should remain within explicitly defined authority boundaries.
+
+### 10.6 Risk-Aware Decisioning
+
+The system should account for risk rather than treating every technically valid action as equally suitable for automatic execution.
+
+### 10.7 Human Oversight
+
+Human intervention should remain available for ambiguous, exceptional, high-risk, or otherwise consequential cases.
+
+### 10.8 Auditability
+
+Decisions should produce structured records that allow authorised stakeholders to reconstruct and review the decision process.
+
+### 10.9 Fail Safely
+
+When critical information is missing or a critical control cannot be satisfactorily verified, the system should favour escalation or blocking rather than silently assuming that the action is safe.
+
+### 10.10 Prototype Transparency
+
+The project will clearly distinguish between implemented functionality, simulated behaviour, research assumptions, and future production capabilities.
+
